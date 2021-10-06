@@ -7,7 +7,7 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const directorsRouter = require('./routes/directors')
-const gendersRouter = require('./routes/genders');
+const genresRouter = require('./routes/genres');
 const moviesRouter = require('./routes/movies');
 const actorsRouter = require('./routes/actors');
 const copiesRouter = require('./routes/copies');
@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/directors', directorsRouter);
-app.use('/genders', gendersRouter);
+app.use('/genres', genresRouter);
 app.use('/movies', moviesRouter);
 app.use('/actors', actorsRouter);
 app.use('/copies', copiesRouter);

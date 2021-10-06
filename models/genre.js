@@ -1,8 +1,8 @@
 module.exports = (sequelize, type ) =>{
-    const Gender = sequelize.define('genders',{
+    const Genre = sequelize.define('genres',{
         id: {type: type.INTEGER, primaryKey: true,autoIncrement: true},
         description: type.STRING,
         status: type.BOOLEAN
     });
-    return Gender;
+    return Genre;
 }

@@ -3,7 +3,7 @@ const { Movie } = require('../db');
 const { Actor } = require('../db');
 
 function list(req, res, next) {
-    Movie.findAll({include:['gender', 'director', 'copy']})
+    Movie.findAll({include:['genre', 'director', 'copy']})
             .then(objects => res.json(objects))
             .catch(err => res.send(err));
 };
@@ -28,12 +28,12 @@ function addActor(req, res, next){
 }
 function create(req, res, next){
   const title = req.body.title;
-  const genderId = req.body.genderId;
+  const genreId = req.body.genreId;
   const directorId = req.body.directorId;
 
   let movie = new Object({
     title:title,
-    genderId:genderId,
+    genreId:genreId,
     directorId:directorId
   });
 

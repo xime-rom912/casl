@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const controller = require('../controllers/genders');
+const controller = require('../controllers/genres');
 
 /* GET users listing. */
 router.get('/', controller.list);
