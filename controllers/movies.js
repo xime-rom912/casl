@@ -1,79 +1,160 @@
+const { dir } = require('async');
 const express = require('express');
-const { Movie } = require('../db');
-const { Actor } = require('../db');
+const Movie = require('../models/movie');
 
+// RESTFULL => GET, POST, PUT, PATCH, DELETE 
+// Modelo = (Una estructura de datos que representa una enditidad del mundo real)
 function list(req, res, next) {
-    Movie.findAll({include:['genre', 'director', 'copy']})
-            .then(objects => res.json(objects))
-            .catch(err => res.send(err));
+  Movie.find().then(objs => res.status(200).json({
+    message: 'Lista de peliculas del sistema',
+    obj:objs
+  })).catch(ex => res.status(500).json({
+    message: 'No se pudo consultar la informacion de las peliculas',
+    obj: ex
+  }));
 };
 
 function index(req, res, next){
-  const id = req.body.id;
-  Movie.findByPk(id) 
-          .then(object => res.json(object))
-          .catch(err => res.send(err));
+  const id = req.params.id;
+  Movie.findOne({"_id":id}).then(obj => res.status(200).json({
+    message: `Pelicula almacenada con ID ${id}`,
+    obj:obj
+  })).catch(ex => res.status(500).json({
+    message: `No se pudo consultar la informacion de la pelicula con ID ${id}`,
+    obj: ex
+  }));
 }
 
-function addActor(req, res, next){
-  const idMovie = req.body.idMovie;
-  const idActor = req.body.idActor;
-
-  Movie.findByPk(idMovie).then((movie)=>{
-         Actor.findByPk(idActor).then((actor) => {
-                movie.addActor(actor);
-                res.json(movie);
-         });      
-  });
-}
 function create(req, res, next){
+  let director = new Map();
+  let actors = new Array();
+  const genre = req.body.genre;
   const title = req.body.title;
-  const genreId = req.body.genreId;
-  const directorId = req.body.directorId;
-
-  let movie = new Object({
+  const directorLastName = req.body.directorLastName;
+  var actorsLastName = req.body.actorsLastName;
+  const directorName = req.body.directorName;
+  var actorsName = req.body.actorsName;
+  director.set(directorName, "name");
+  director.set(directorLastName, "lastName");
+  actors.push(actorsName,actorsLastName);
+  let movie = new Movie({
+    genre:genre,
     title:title,
-    genreId:genreId,
-    directorId:directorId
+    director:director,
+    actors:actors,
+    directorLastName:directorLastName,
+    actorsLastName:actorsLastName,
+    directorLastName:directorLastName,
+    actorsLastName:actorsLastName,
+    directorName:directorName,
+    actorsName:actorsName
   });
 
-  Movie.create(movie)
-          .then(obj  => res.json(obj))
-          .catch(err => res.send(err));
+  movie.save().then(obj => res.status(200).json({
+    message: 'Pelicula creada correctamente',
+    obj: obj
+  })).catch(ex => res.status(500).json({
+    message: 'No se pudo almacenar la pelicula',
+    obj: ex
+  }));
 }
 
 function replace(req, res, next){
-  Movie.findByPk(id) 
-          .then(object => {
-            const title = req.body.title ? req.body.title :"";
-            const genderId = req.body.genderId ? req.body.genderId : "";
-            const directorId = req.body.directorId ? req.body.directorId :"";
-            object.update({title:title,genderId:genderId,directorId:directorId})
-                  .then(copy => res.json(copy));
-          })
-          .catch(err => res.send(err));
+  const id = req.params.id;
+  let director = new Map();
+  let actors = new Array();
+  let genre = req.body.genre ? req.body.genre: "";
+  let title = req.body.title ? req.body.title: "";
+  let directorLastName = req.body.directorLastName ? req.body.directorLastName: "";
+  let actorsLastName = req.body.actorsLastName ? req.body.actorsLastName: "";
+  let directorName = req.body.directorName ? req.body.directorName: "";
+  let actorsName = req.body.actorsName ? req.body.actorsName: "";
+  director.set(directorName, "name");
+  director.set(directorLastName, "lastName");
+  actors.push(actorsName,actorsLastName);
+  
+  let movie = new Object({
+    _genre: genre,
+    _title:title,
+    _director:director,
+    _actors:actors,
+    _directorLastName:directorLastName,
+    _directorName:directorName,
+    _actorsLastName:actorsLastName,
+    _actorsName:actorsName
+  });
+  Movie.findOneAndUpdate({"_id":id},movie).then(obj => res.status(200).json({
+    message: "Pelicula remplazada correctamente",
+    obj:obj
+  })).catch(ex => res.status(500).json({
+    message: "No se pudo remplazar la pelicula",
+    obj: ex
+  }));
 }
 
 function edit(req, res, next){
   const id = req.params.id;
-  Movie.findByPk(id) 
-          .then(object => {
-            const title = req.body.title ? req.body.title : object.title;
-            const genderId = req.body.genderId ? req.body.genderId : object.genderId;
-            const directorId = req.body.directorId ? req.body.directorId : object.directorId;
-            object.update({title:title,genderId:genderId,directorId:directorId})
-                  .then(copy => res.json(copy));
-          })
-          .catch(err => res.send(err));
+  let director = new Map();
+  let actors = new Array();
+  const genre = req.params.genre;
+  const title = req.params.title;
+  const directorLastName = req.params.directorLastName;
+  const actorsLastName = req.params.actorsLastName;
+  const actorsName = req.params.actorsName;
+  const directorName = req.params.directorName;
+
+  let movie = new Object();
+
+  if(genre){
+    movie._genre = genre;
+  }
+
+  if(title){
+    movie._title = title;
+  }
+
+  if(directorLastName){
+    movie._directorLastName = directorLastName;
+    director.set(directorLastName, "lastName");
+  }
+
+  if(actorsLastName){
+    movie._actorsLastName = actorsLastName;
+    actors.push(actorsLastName);
+  }
+  if(actorsName){
+    movie._actorsName = actorsName;
+    actors.push(actorsName);
+  }
+
+  if(directorName){
+    movie._directorName = directorName;
+    director.set(directorName, "name");
+  }
+  
+    movie._director = director;
+    movie._actors = actors;
+  Movie.findOneAndUpdate({"_id":id},movie).then(obj => res.status(200).json({
+    message: "Pelicula actualizada correctamente",
+    obj:obj
+  })).catch(ex => res.status(500).json({
+    message: "No se pudo actualizar la pelicula",
+    obj: ex
+  }));
 }
 
 function destroy(req, res, next){
   const id = req.params.id;
-  Movie.destroy({where:{id:id}})
-          .then(obj => res.json(obj))
-          .catch(err => res.send(err));;
+  Movie.remove({"_id":id}).then(obj => res.status(200).json({
+    message: "Pelicula eliminada correctamente",
+    obj:obj
+  })).catch(ex => res.status(500).json({
+    message: "No se pudo eliminar la pelicula",
+    obj: ex
+  }));
 }
 
 module.exports = {
-    list, index, replace, create, edit, destroy, addActor
+    list, index, replace, create, edit, destroy
 }
+

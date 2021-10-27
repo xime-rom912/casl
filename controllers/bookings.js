@@ -1,68 +1,111 @@
 const express = require('express');
-const { Booking } = require('../db');
+const Booking = require('../models/booking');
+const Copy = require('../models/copy');
+const Member = require('../models/copy');
 
+
+// RESTFULL => GET, POST, PUT, PATCH, DELETE 
+// Modelo = (Una estructura de datos que representa una enditidad del mundo real)
 function list(req, res, next) {
-    Booking.findAll({include:['member','copy']})
-            .then(objects => res.json(objects))
-            .catch(err => res.send(err));
-};
-
+  Booking.find().populate('_copy').populate('_member').then(objs => res.status(200).json({
+    message: 'Lista de recervaciones del sistema',
+    obj:objs
+  })).catch(ex => res.status(500).json({
+    message: 'No se pudo consultar la informacion de las recervaciones',
+    obj: ex
+  }));;
+}
 function index(req, res, next){
-  const id = req.body.id;
-  Booking.findByPk(id) 
-          .then(object => res.json(object))
-          .catch(err => res.send(err));
+  const id = req.params.id;
+  Booking.findOne({"_id":id}).populate('_copy').populate('_member').then(objs => res.status(200).json({
+    message: 'Lista las recervaciones del sistema',
+    obj:objs
+  })).catch(ex => res.status(500).json({
+    message: 'No se pudo consultar la informacion de las recervaciones',
+    obj: ex
+  }));
 }
 
 function create(req, res, next){
+  const copy = req.body.copy;
+  const member = req.body.member;
   const date = req.body.date;
-  const memberId = req.body.memberId;
-  const copyId = req.body.copyId;
-
-  let booking = new Object({
-    date:date,
-    memberId:memberId,
-    copyId:copyId,
+  
+  let booking = new Booking({
+    copy:copy,
+    member:member,
+    date:date
   });
 
-  Booking.create(booking)
-          .then(obj  => res.json(obj))
-          .catch(err => res.send(err));
+  booking.save().then(obj => res.status(200).json({
+    message: 'Recervacion creada correctamente',
+    obj: obj
+  })).catch(ex => res.status(500).json({
+    message: 'No se pudo almacenar la recervacion',
+    obj: ex
+  }));
 }
 
 function replace(req, res, next){
   const id = req.params.id;
-  Booking.findByPk(id) 
-          .then(object => {
-            const date = req.body.date ? req.body.date :"";
-            const memberId = req.body.memberId ? req.body.memberId : "";
-            const copyId = req.body.copyId ? req.body.copyId : "";
-            object.update({date:date,memberId:memberId,copyId:copyId})
-                  .then(booking => res.json(booking));
-          })
-          .catch(err => res.send(err));
+  let copy = req.body.copy ? req.body.copy: "";
+  let member = req.body.member ? req.body.member: "";
+  let date = req.body.date ? req.body.date: "";
+
+  let booking = new Object({
+    _copy: copy,
+    _member:member,
+    _date:date
+  });
+  Booking.findOneAndUpdate({"_id":id},booking).then(obj => res.status(200).json({
+    message: "Recervacion remplazado correctamente",
+    obj:obj
+  })).catch(ex => res.status(500).json({
+    message: "No se pudo remplazar la recervacion",
+    obj: ex
+  }));
 }
 
 function edit(req, res, next){
   const id = req.params.id;
-  Booking.findByPk(id) 
-          .then(object => {
-            const date = req.body.date ? req.body.date : object.date;
-            const memberId = req.body.memberId ? req.body.memberId : object.memberId;
-            const copyId = req.body.copyId ? req.body.copyId : object.copyId;
-            object.update({date:date,memberId:memberId,copyId:copyId})
-                  .then(booking => res.json(booking));
-          })
-          .catch(err => res.send(err));
+  const copy = req.params.copy;
+  const member = req.params.member;
+  const date = req.params.date;
+
+  let booking = new Object();
+
+  if(copy){
+    booking._copy = copy;
+  }
+
+  if(member){
+    booking._member = member;
+  }
+
+  if(date){
+    booking._date = date;
+  }
+  Booking.findOneAndUpdate({"_id":id},booking).then(obj => res.status(200).json({
+    message: "Recervacion actualizada correctamente",
+    obj:obj
+  })).catch(ex => res.status(500).json({
+    message: "No se pudo actualizar la recervacion",
+    obj: ex
+  }));
 }
 
 function destroy(req, res, next){
   const id = req.params.id;
-  Booking.destroy({where:{id:id}})
-          .then(obj => res.json(obj))
-          .catch(err => res.send(err));;
+  Booking.remove({"_id":id}).then(obj => res.status(200).json({
+    message: "Recervacion eliminada correctamente",
+    obj:obj
+  })).catch(ex => res.status(500).json({
+    message: "No se pudo eliminar la recervacion",
+    obj: ex
+  }));
 }
 
 module.exports = {
     list, index, replace, create, edit, destroy
 }
+

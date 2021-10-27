@@ -10,8 +10,6 @@ router.get('/:id',controller.index);
 
 router.post('/', controller.create);
 
-router.post('/add/actor', controller.addActor);
-
 router.put('/:id', controller.replace);
 
 router.patch('/:id', controller.edit);
