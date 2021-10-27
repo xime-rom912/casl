@@ -96,12 +96,12 @@ function edit(req, res, next){
   const id = req.params.id;
   let director = new Map();
   let actors = new Array();
-  const genre = req.params.genre;
-  const title = req.params.title;
-  const directorLastName = req.params.directorLastName;
-  const actorsLastName = req.params.actorsLastName;
-  const actorsName = req.params.actorsName;
-  const directorName = req.params.directorName;
+  const genre = req.body.genre;
+  const title = req.body.title;
+  const directorLastName = req.body.directorLastName;
+  const actorsLastName = req.body.actorsLastName;
+  const actorsName = req.body.actorsName;
+  const directorName = req.body.directorName;
 
   let movie = new Object();
 

@@ -105,15 +105,17 @@ function replace(req, res, next){
 function edit(req, res, next){
   var address = new Map();
   const id = req.params.id;
-  const name = req.params.name;
-  const lastName = req.params.lastName;
-  const phone = req.params.phone;
-  const status = req.params.status;
-  const addressCity = req.params.addressCity;
-  const addressCountry = req.params.addressCountry;
-  const addressNumber = req.params.addressNumber;
-  const addressState = req.params.addressState;
-  const addressStreet = req.params.addressStreet;
+  const name = req.body.name;
+  const lastName = req.body.lastName;
+  const phone = req.body.phone;
+  const status = req.body.status;
+  const addressCity = req.body.addressCity;
+  const addressCountry = req.body.addressCountry;
+  const addressNumber = req.body.addressNumber;
+  const addressState = req.body.addressState;
+  const addressStreet = req.body.addressStreet;
+
+  
 
   let member = new Object();
 
@@ -122,7 +124,7 @@ function edit(req, res, next){
   }
 
   if(lastName){
-    member._lastname = lastName;
+    member._lastName = lastName;
   }
 
   if(phone){

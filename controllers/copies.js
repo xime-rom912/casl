@@ -71,10 +71,10 @@ function replace(req, res, next){
 
 function edit(req, res, next){
   const id = req.params.id;
-  const format = req.params.format;
-  const movie = req.params.movie;
-  const number = req.params.number;
-  const status = req.params.status;
+  const format = req.body.format;
+  const movie = req.body.movie;
+  const number = req.body.number;
+  const status = req.body.status;
 
   let copy = new Object();
 

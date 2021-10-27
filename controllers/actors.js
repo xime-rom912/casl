@@ -62,8 +62,8 @@ function replace(req, res, next){
 
 function edit(req, res, next){
   const id = req.params.id;
-  const name = req.params.name;
-  const lastName = req.params.lastName;
+  const name = req.body.name;
+  const lastName = req.body.lastName;
 
   let actor = new Object();
 
@@ -72,7 +72,7 @@ function edit(req, res, next){
   }
 
   if(lastName){
-    actor._lastname = lastName;
+    actor._lastName = lastName;
   }
   Actor.findOneAndUpdate({"_id":id},actor).then(obj => res.status(200).json({
     message: "Actor actualizado correctamente",

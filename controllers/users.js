@@ -85,10 +85,10 @@ function replace(req, res, next){
 
 function edit(req, res, next){
   let id = req.params.id;
-  let name = req.params.name;
-  let lastName = req.params.lastName;
-  let email = req.params.emial;
-  let password = req.params.password;
+  let name = req.body.name;
+  let lastName = req.body.lastName;
+  let email = req.body.emial;
+  let password = req.body.password;
 
 
   let user = new Object();
@@ -98,7 +98,7 @@ function edit(req, res, next){
   }
 
   if(lastName){
-    user._lastname = lastName;
+    user._lastName = lastName;
   }
 
   if(email){
