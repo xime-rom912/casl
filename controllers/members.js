@@ -115,8 +115,6 @@ function edit(req, res, next){
   const addressState = req.body.addressState;
   const addressStreet = req.body.addressStreet;
 
-  
-
   let member = new Object();
 
   if(name){
@@ -160,6 +158,7 @@ function edit(req, res, next){
     address.set(addressStreet, "Street");
   }
   
+  member._address = address;S
   Member.findOneAndUpdate({"_id":id},member).then(obj => res.status(200).json({
     message: "Miembro actualizado correctamente",
     obj:obj
