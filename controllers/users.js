@@ -8,7 +8,7 @@ const User = require('../models/user');
 // Modelo = (Una estructura de datos que representa una enditidad del mundo real)
 function list(req, res, next) {
   let page = req.params.page ? req.params.page : 1;
-  User.paginate({}, {page:page, limit:3}).then(objs => res.status(200).json({
+  User.paginate({}, {page:page, limit:3}).find().populate("_profiles").then(objs => res.status(200).json({
     message: 'Lista de usuarios del sistema',
     obj:objs
   })).catch(ex => res.status(500).json({
@@ -19,7 +19,7 @@ function list(req, res, next) {
 
 function index(req, res, next){
   const id = req.params.id;
-  User.findOne({"_id":id}).then(obj => res.status(200).json({
+  User.findOne({"_id":id}).populate("_profiles").then(obj => res.status(200).json({
     message: `Usuario almacenado con ID ${id}`,
     obj:obj
   })).catch(ex => res.status(500).json({
@@ -33,6 +33,7 @@ function create(req, res, next){
   let lastName = req.body.lastName;
   let email = req.body.email;
   let password = req.body.password;
+  let profiles = req.body.profiles;
 
   async.parallel({
     salt:(callback) =>{
@@ -44,6 +45,7 @@ function create(req, res, next){
         name:name,
         lastName:lastName,
         email:email,
+        profiles: profiles,
         password:hash,
         salt:result.salt
       });
@@ -66,12 +68,14 @@ function replace(req, res, next){
   let name = req.body.name ? req.body.name: "";
   let lastName = req.body.lastName ? req.body.lastName: "";
   let email = req.body.email ? req.body.email: "";
+  let profiles = req.body.email ? req.body.profiles: "";
   let password = req.body.password ? req.body.password: "";
 
   let user = new Object({
     _name: name,
     _lastName:lastName,
     _email: email,
+    _profiles:profiles,
     _password:password
   });
   User.findOneAndUpdate({"_id":id},user).then(obj => res.status(200).json({
@@ -87,7 +91,8 @@ function edit(req, res, next){
   let id = req.params.id;
   let name = req.body.name;
   let lastName = req.body.lastName;
-  let email = req.body.emial;
+  let email = req.body.email;
+  let profiles = req.body.profiles;
   let password = req.body.password;
 
 
@@ -105,6 +110,9 @@ function edit(req, res, next){
     user._email = email;
   }
 
+  if(profiles){
+    user._profiles = profiles;
+  }
   if(password){
     user._password = password;
   }
