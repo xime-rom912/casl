@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
+var Schema = mongoose.Schema;
 
 const schema = mongoose.Schema({
     _email:String,
     _name:String,
     _lastName:String,
     _password:String,
-    _salt:String
+    _salt:String,
+    _profiles:{type: Schema.ObjectId, ref: "Profile" }
 });
 
 class User {
