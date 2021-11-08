@@ -115,6 +115,16 @@ function edit(req, res, next){
   const addressState = req.body.addressState;
   const addressStreet = req.body.addressStreet;
 
+  
+  Member.find({ "_id": id}, 'address').exec().then(obj => res.status(200).json({
+    message: `Miembro almacenado con ID ${id}`,
+    obj:obj
+  })).catch(ex => res.status(500).json({
+    message: `No se pudo consultar la informacion del miembros con ID ${id}`,
+    obj: ex
+  }));
+
+
   let member = new Object();
 
   if(name){
@@ -158,7 +168,7 @@ function edit(req, res, next){
     address.set(addressStreet, "Street");
   }
   
-  member._address = address;S
+  member._address = address;
   Member.findOneAndUpdate({"_id":id},member).then(obj => res.status(200).json({
     message: "Miembro actualizado correctamente",
     obj:obj
