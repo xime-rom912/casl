@@ -13,6 +13,7 @@ const moviesRouter = require('./routes/movies');
 const copiesRouter = require('./routes/copies');
 const membersRouter = require('./routes/members');
 const bookingsRouter = require('./routes/bookings');
+const profileRouter = require('./routes/profiles');
 
 const jwtKey ="8adadb33444c21fa46b346f86d6db";
 
@@ -53,6 +54,7 @@ app.use('/movies', moviesRouter);
 app.use('/members', membersRouter);
 app.use('/copies', copiesRouter);
 app.use('/bookings', bookingsRouter);
+app.use('/profile', profileRouter);
 
 
 // catch 404 and forward to error handler
