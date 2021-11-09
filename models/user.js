@@ -17,6 +17,7 @@ class User {
         this.lastName = lastName;
         this.email = email;
         this.password = password
+        this.profiles = profiles;
         this.salt = salt
     }
 
@@ -58,6 +59,14 @@ class User {
 
     set salt(v){
         this._salt = v;
+    }
+
+    get profiles(){
+        return this._profiles;
+    }
+
+    set profiles(v){
+        this._profiles = v;
     }
 }
 

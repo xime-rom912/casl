@@ -7,8 +7,7 @@ const User = require('../models/user');
 // RESTFULL => GET, POST, PUT, PATCH, DELETE 
 // Modelo = (Una estructura de datos que representa una enditidad del mundo real)
 function list(req, res, next) {
-  let page = req.params.page ? req.params.page : 1;
-  User.paginate({}, {page:page, limit:3}).find().populate("_profiles").then(objs => res.status(200).json({
+  User.find().populate('_profiles').then(objs => res.status(200).json({
     message: 'Lista de usuarios del sistema',
     obj:objs
   })).catch(ex => res.status(500).json({
