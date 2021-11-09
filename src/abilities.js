@@ -1,18 +1,18 @@
 import {AbilityBuilder, Ability} from '@casl/ability';
 
-function defineAbilityFor(user) {
-    return new Ability(defineRulesFor(user));
+function defineAbilityFor(profile) {
+    return new Ability(defineRulesFor(profile));
 }
 
-function defineRulesFor(user) {
+function defineRulesFor(profile) {
   const builder = new AbilityBuilder(Ability);
 
-  switch (user.role) {
+  switch (profile.role) {
     case 'admin':
-      defineAdminRules(builder, user);
+      defineAdminRules(builder, profile);
       break;
     case 'basicUser':
-      defineBasicUserRules(builder, user);
+      defineBasicprofileRules(builder, profile);
       break;
   }
 
@@ -23,7 +23,7 @@ function defineAdminRules({ can }) {
   can('manage', 'all');
 }
 
-function defineBasicUserRules({ can }, user) {
+function defineBasicUserRules({ can }, profile) {
   can('read', 'Movie');
 }
 
